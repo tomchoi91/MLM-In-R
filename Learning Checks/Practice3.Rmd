@@ -100,7 +100,7 @@ Use the model from the above Practice Problem 1 but insert the version of age th
 # Conditional model with CWC age variable in place of original age
 ```
 
-A one-unit increase in age *within* a district is associated with what amount of change in support of women's reproductive rights? 
+A one-unit increase in age *within* a district (for students 1 year older when compared to student at district mean age) is associated with what amount of change in support of women's reproductive rights? 
 
 A one-unit increase in the *district's average age* is associated with what amount of change in support of women's reproductive rights? 
 
@@ -110,7 +110,7 @@ Use the model from the above Practice Problem 1 but insert the version of age th
 # Conditional model with CGM age variable in place of original age
 ```
 
-A one-unit increase in age *within* a district relative to the grand mean is associated with what amount of change in support of women's reproductive rights? 
+A one-unit increase in age *within* a district *relative to the grand mean* (for students 1 year older when compared to student at grand mean age) is associated with what amount of change in support of women's reproductive rights? 
 
 For two people who are of the same age, what is the amount of change in support of women's reproductive rights for the person who lives in a district of higher average age? That is, for every 1 unit increase in CGM age, what is the associated change in their support of reproductive rights?
 
