@@ -12,7 +12,7 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 
 library(pacman)
-p_load("utils", "lme4", "sjPlot", install = T)
+p_load("utils", "lme4", "lmerTest", "sjPlot", "tidyverse", install = T)
 # Load additional packages here
 ```
 
@@ -32,45 +32,83 @@ Before moving into the Practice Problems, ensure that the treatment variable is 
 
 ```{r}
 # Transform data here
+canines <- read.csv("../Practice Data/phlebitis.csv") %>%
+  mutate(Treatment = factor(Treatment))
+
 ```
 
 ## Practice Problem 1
 
-Create an unconditional (null) model with math score ("Y") as the outcome variable that uses "Animal" as the clustering variable. Use FIML as the estimator by inputting `REML = F` in the `lmer()` function. Then, compute the empty model's intraclass correlation with any method that we have used (`{performance}`, `VarCorr()`, or by hand). 
+Create an unconditional (null) model with difference in ear temperatures ("Y") as the outcome variable that uses "Animal" as the clustering variable. Use FIML as the estimator by inputting `REML = F` in the `lmer()` function. Then, compute the empty model's intraclass correlation with any method that we have used (`{performance}`, `VarCorr()`, or by hand). 
 
 ```{r}
 # Create empty model and compute ICC
+model1 <- lmer(Y ~ 1 + (1|Animal), data=canines, REML=FALSE)
+summary(model1)
+# as_tibble
+VarCorr(model1) %>%
+  as_tibble() %>%
+  mutate(icc=vcov/sum(vcov))
+
 ```
 
 Considering the ICC, should we account for nested nature of the data? What proportion (or percent) of variance in the outcome is attributed to clustering?
 
-Enter level 1 fixed effects for Treatment and Time. 
+```{r}
+
+```
+
+|        Yes, as 32.9% of the variability in the outcome is due to clustering (ICC = .329), i.e., the dog.
+
+Enter level 2 fixed effect for Treatment and level 1 fixed effect for Time. 
 
 ```{r}
 # Create conditional model with new fixed effects
+model2 <- lmer(Y ~ 1 + Treatment + factor(Time) + (1|Animal), data=canines, REML=FALSE)
+summary(model2)
 ```
 
-Why would treament and time be considered level 1 effects? What is "level 1" in this scenario?
+Why would Time be considered level 1 effects? What is "level 1" in this scenario?
 
 Does the effect of treatment type on phlebitis (i.e., difference in ear temperatures) change based on time of measure? Insert a level 1 interaction fixed effect using either "*" or ":" syntax method from Practice4 to test this.
 
 Plot the interaction via `{ggplot2}`. 
 
-```{r}
+```{r, message = F}
 # Interaction plot
+model3 <- lmer(Y ~ 1 + Treatment + factor(Time) + Treatment:factor(Time) + (1|Animal), data=canines, REML=FALSE)
+summary(model3)
 ```
 
 Does effect of Treatment on Y depend on Time? Or, reversely, does effect of Time on Y depend on Treatment? 
 
-Insert level 2 fixed effects "Age" and "Size". It was also hypothesized that the effect of time on differences in ear temperature depends on a dog's size. Insert a cross-level interaction to test this.
+|       As time increases, the difference in ear temperatures of dogs in Treatment 1 increases by .03 ($\beta_{Time}=.03, SE = .005, t(45) = 6.054, p < .05$). The effect of Treatment also depends on Time (or vice-versa). Specifically, an increase in Time decreases the effect of Treatment 2 on difference in temperature of ears, where the slope decreases at a rate of .023 as Time increases ($\beta_{Time \times Treatment2}=-.0225, SE = .007, t(45)=-3.23, p < .05$). In addition, an increase in Time decreases the effect of Treatment 3 on difference in temperature of ears, where the slope decreases at a rate of .023 as Time incerases ($\beta_{Time \times Treatment2}=-.023, SE = .007, t(45)=-3.31, p < .05$). 
+
+Test whether model fit improved between the three models (unconditional, conditional with fixed effects, conditional with fixed effects and interaction) via the `anova()` function.
+
+```{r}
+anova(model2, model3)
+```
+
+In another model, insert level 2 fixed effects "Age" and "Size". 
 
 ```{r}
 # Model with Age and Size
 ```
 
+It was also hypothesized that the effect of time on differences in ear temperature depends on a dog's size. Insert a cross-level interaction to test this.
+
+```{r}
+
+```
+
 What did the level 2 fixed effects tell us about a dog's age and size? 
 
-Test whether model fit improved between the four models (unconditional, conditional with fixed effects, conditional with fixed effects and interaction, conditional model with level 1 and 2 fixed effects) via the `anova()` function.
+Test whether model fit improved between the three models (unconditional, conditional with fixed effects, conditional with fixed effects and interaction) via the `anova()` function.
+
+```{r}
+
+```
 
 ---
 
@@ -82,7 +120,7 @@ Test whether model fit improved between the four models (unconditional, conditio
 
 The next faux dataset that we will use, reaction.xlsx, involves the use of a reaction time experiment conducted on 24 participants ("Subject"). 
 
-Three pairs of the same images ("Cues") are randomized to appear on the screen that features a threat on either the right half of the computer screen or the left half of the copmuter screen. On the other half of the screen is a non-threatening image. Threatening images involved graphics of a masked robber pointing a gun at the participant, an attacking mountain lion, or a snake lunging toward the participant. Participants were given a three-second countdown in between each cue.
+Three pairs of the same images ("Cues") are randomized to appear on the screen that features a threat on either the right half of the computer screen or the left half of the computer screen. On the other half of the screen is a non-threatening image. Threatening images involved graphics of a masked robber pointing a gun at the participant, an attacking mountain lion, or a snake lunging toward the participant. Participants were given a three-second countdown in between each cue.
 
 The same pairs of cues were randomly used twice -- once in color and once in black and white. Cue images that are in black and white were coded as Color = 0, whereas all images in full color were coded as Color = 1. 
 

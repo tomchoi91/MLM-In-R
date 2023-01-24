@@ -432,7 +432,7 @@ pre code {
 
 <h1 class="title toc-ignore">Learning Check 4</h1>
 <h4 class="author">Enter Name Here</h4>
-<h4 class="date">Fri/13/Jan</h4>
+<h4 class="date">Thu/19/Jan</h4>
 
 </div>
 
@@ -441,55 +441,43 @@ pre code {
 <p><strong>But, what about the differences in slopes between each district?</strong></p>
 <div id="practice-problem-1" class="section level2">
 <h2>Practice Problem 1</h2>
-<p>Using the NERD$ data, build a conditional model with grade level (“level”) and enrollment (“enroll_raw_NE”) as level 1 predictors. Let district_ID be the grouping variable. Create a random intercept and slope for district_ID and only a random slope for enrollment. Do not center the data.</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Conditional model with random slope of enrollment</span></a></code></pre></div>
-<p>Create the Tau (<span class="math inline">\(\tau\)</span>) matrix for the above model. This is also commonly known as the G-matrix in SAS. This will require the <code>{Matrix}</code> package. Ensure that the main diagonal of the Tau matrix matches the output from the model’s values under its random effects. The off-diagonal represents the covariance between the random effects.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Tau matrix goes here</span></a></code></pre></div>
-<p>Using the following equation to calculate the correlation between the random effects:</p>
-<p style="text-align: center;">
-<span class="math inline">\(\frac{Cov(Intercept, Enrollment)}{sd_{Intercept}+sd_{Enrollment}}\)</span>
-</p>
-<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Compute random effects correlation by hand</span></a></code></pre></div>
-</div>
-<div id="practice-problem-2" class="section level2">
-<h2>Practice Problem 2</h2>
-<p>The next model to create involves a cross-level interaction. Because the NERD$ dataset does not naturally include level 2 variables, we will move to using the centered-within-cluster (CWC) age variable that was created in Practice3 from the British Social Attitudes survey.</p>
-<p>Predict support of women’s reproductive rights by using the predictors “Sex”, “Religion”, CWC age, and the interaction of Sex and CWC age. This can be done in two ways: <code>Sex:CWCAge</code> or <code>Sex*CWCAge</code>. The latter will include Sex, CWCAge, and Sex by CWCAge as separate predictors whereas Sex:CWCAge will only compute one coefficient for the interaction. Include a random intercept and slope for district Also include a random slope for CWCAge. That was a lot of words so here is a list of things to put into the model:</p>
+<p>We will create a model that involves a cross-level interaction and new random slope. Because the NERD$ dataset does not naturally include level 2 variables, we will move to using the centered-within-cluster (CWC) age variable that was created in Practice3 from the British Social Attitudes survey.</p>
+<p>Predict support of women’s reproductive rights by using the predictors “Year”, CWC age, and the interaction of Year and CWC age. This can be done in two ways: <code>Year:CWCAge</code> or <code>Year*CWCAge</code>. The latter will include Year, CWCAge, and Year by CWCAge as separate predictors whereas Year:CWCAge will only compute one coefficient for the interaction. Include a random intercept and slope for district Also include a random slope for CWCAge. That was a lot of words so here is a list of things to put into the model:</p>
 <ul>
-<li>Sex</li>
-<li>Religion (as a factor)</li>
-<li>CWC Age</li>
-<li>The interaction of Sex and CWC Age</li>
-<li>A random intercept and slope for district_ID</li>
+<li>Year</li>
+<li>Ages</li>
+<li>Centered-within-clusters Ages</li>
+<li>The interaction of Year and CWC Age</li>
+<li>A random intercept for district_ID</li>
 <li>A random slope for CWC Age</li>
 </ul>
-<p>Because we are including both fixed and random effects, we can consider this model a mixed or mixed-effects model!</p>
-<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Create the full model here</span></a></code></pre></div>
-<p>If Sex is coded as 0 = male and 1 = female, which of the two is associated with greater support for women’s reproductive rights?</p>
-<p>Which religion category is associated with the greatest support for these rights? For reference:</p>
-<ul>
-<li>Roman Catholic = 1</li>
-<li>Protestant/Church of England = 2</li>
-<li>Other religion = 3</li>
-<li>No religion = 4</li>
-</ul>
+<p>Because we are including both fixed and random effects, we can consider this model a mixed or mixed-effects model! When building the model, use <code>REML = F</code> in the <code>lmer()</code> function (i.e., use maximum likelihood, “ML” as the estimator).</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" data-line-number="1"><span class="co"># Create the full model here</span></a></code></pre></div>
+<p>Create the Tau (<span class="math inline">\(\tau\)</span>) matrix for the above model. This is also commonly known as the G-matrix in SAS. This will require the <code>{Matrix}</code> package. Ensure that the main diagonal of the Tau matrix matches the output from the model’s values under its random effects. The off-diagonal represents the covariance between the random effects.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" data-line-number="1"><span class="co"># Tau matrix goes here</span></a></code></pre></div>
+<p>Using the following equation to calculate the correlation between the intercept and slope:</p>
+<p style="text-align: center;">
+<span class="math inline">\(\frac{Cov(Intercept, Enrollment)}{sd_{Intercept}\times sd_{Enrollment}}\)</span>
+</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" data-line-number="1"><span class="co"># Compute random effects correlation by hand</span></a></code></pre></div>
+<p>If Year is coded as 1 = 1983 … 4 = 1986, which year is associated with greatest support for women’s reproductive rights?</p>
+<p>Are respondents who are older than the average age of their district (i.e., centered within-cluster age) more or less likely to support these rights?</p>
 <p>Are districts with respondents who are higher than the average age more or less likely to support these rights?</p>
 <p>Plot the interaction term involved in the above model using <code>{ggplot2}</code>.</p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Plot interaction here</span></a></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb4-1" data-line-number="1"><span class="co"># Plot interaction here</span></a></code></pre></div>
 <p>Visually speaking, do you see existing moderation from the interaction plot?</p>
-<p>Using the <code>lmer</code> model output, what influence does average age of district have on the association between respondent sex and support of women’s reproductive rights? In other words, does the association between sex and support of women’s reproductive rights <em>depend on</em> the average age of the district that the respondent comes from (or vice-versa)?</p>
+<p>Using the <code>lmer</code> model output, what influence does average age of district have on the association between respondent year and support of women’s reproductive rights? In other words, does the association between year and support of women’s reproductive rights <em>depend on</em> the average age of the district that the respondent comes from (or vice-versa)?</p>
 <p>Is this interaction significant?</p>
 <p>Decide whether it is worthwhile to retain this interaction by creating the same model but without the interaction term. Then use the <code>anova()</code> function (with <code>refit = F</code>) to compare model deviances like we did in Practice3.</p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Create (i.e., copy + paste) the model from above but without interaction</span></a>
-<a class="sourceLine" id="cb6-2" data-line-number="2"><span class="co"># Compare model deviances</span></a></code></pre></div>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" data-line-number="1"><span class="co"># Create (i.e., copy + paste) the model from above but without interaction</span></a>
+<a class="sourceLine" id="cb5-2" data-line-number="2"><span class="co"># Compare model deviances</span></a></code></pre></div>
 </div>
 <div id="practice-problem-3" class="section level2">
 <h2>Practice Problem 3</h2>
 <p>Use the <code>r2mlm(model)</code> function to decompose the better fitting model from above. What type of effects make up the majority of the total variance and between-district variance?</p>
-<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" data-line-number="1"><span class="co"># Variance decomposition goes here</span></a></code></pre></div>
-<p>Using the “Decomposition” estimates, what type of effect (fixed within, fixed between, slope, or mean/intercepts) involves the greatest proportion of variability explained for the total variance?</p>
-<p>Using the “Decomposition” estimates, what type of effect (fixed within, fixed between, slope, or mean/intercepts) involves the greatest proportion of variability explained for the within-district variance?</p>
-<p>Using the “Decomposition” estimates, what effect (fixed within, fixed between, slope, or mean/intercepts) involves the greatest proportion of variability explained for the between-district variance?</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" data-line-number="1"><span class="co"># Variance decomposition goes here</span></a></code></pre></div>
+<p>Using the “Decomposition” estimates <strong>from the better fitting model</strong>, what type of effect (fixed within, fixed between, slope, or mean/intercepts) involves the greatest proportion of variability explained for the total variance?</p>
+<p>Using the “Decomposition” estimates <strong>from the better fitting model</strong>, what percent of total proportion of variance is unexplained?</p>
 </div>
 
 
