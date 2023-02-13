@@ -137,6 +137,7 @@ BSA_Data %<>%
 
 BSA_Data %<>%
   mutate(Age_GMC = Ages - Age_GrandMean)
+
 ```
 
 Use the model from the above Practice Problem 1 but insert the version of age that is centered within district (CWC) in place of the original age variable. Remember to insert the mean age variable along with this, as explained in Ch. 8 of the Shaw & Flake text. 
@@ -145,6 +146,7 @@ Use the model from the above Practice Problem 1 but insert the version of age th
 # Conditional model with CWC age variable in place of original age
 cond_mod_CWC <- lmer(Support ~ factor(Sex) + factor(Religion) + Age_CWC + Age_mean + 1 + (1 | Districts), data = BSA_Data)
 summary(cond_mod_CWC)
+
 ```
 
 A one-unit increase in age *within* a district is associated with what amount of change in support of women's reproductive rights? 
@@ -161,6 +163,7 @@ Use the model from the above Practice Problem 1 but insert the version of age th
 # Conditional model with CGM age variable in place of original age
 cond_mod_GMC <- lmer(Support ~ factor(Sex) + factor(Religion) + Age_GMC + Age_mean + 1 + (1 | Districts), data = BSA_Data)
 summary(cond_mod_GMC)
+
 ```
 
 A one-unit increase in age *within* a district relative to the grand mean is associated with what amount of change in support of women's reproductive rights? 
